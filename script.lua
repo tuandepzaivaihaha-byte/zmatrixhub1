@@ -1,87 +1,59 @@
--- ZMatrix Hub v1.0 (FIX VERSION)
+-- FIX VERSION
 
 local player = game.Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui")
 
--- GUI
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = PlayerGui
+local ScreenGui = Instance.new("ScreenGui", PlayerGui)
 
--- Main
-local Main = Instance.new("Frame", ScreenGui)
-Main.Size = UDim2.new(0, 400, 0, 230)
-Main.Position = UDim2.new(0.35, 0, 0.35, 0)
-Main.BackgroundColor3 = Color3.fromRGB(30,30,30)
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 300, 0, 200)
+Frame.Position = UDim2.new(0.4, 0, 0.4, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
 
--- Sidebar
-local Side = Instance.new("Frame", Main)
-Side.Size = UDim2.new(0, 120, 1, 0)
-Side.BackgroundColor3 = Color3.fromRGB(20,20,20)
-
--- Title
-local Title = Instance.new("TextLabel", Side)
-Title.Size = UDim2.new(1,0,0,40)
-Title.Text = "ZMatrix Hub"
-Title.TextColor3 = Color3.fromRGB(0,255,255)
-Title.BackgroundTransparency = 1
-Title.TextScaled = true
-
--- Tabs
-local MainTab = Instance.new("TextButton", Side)
-MainTab.Size = UDim2.new(1,0,0,35)
-MainTab.Position = UDim2.new(0,0,0.2,0)
-MainTab.Text = "Main"
-
--- Content
-local Content = Instance.new("Frame", Main)
-Content.Size = UDim2.new(1, -120, 1, 0)
-Content.Position = UDim2.new(0, 120, 0, 0)
-Content.BackgroundTransparency = 1
-
--- Auto Farm Button
-local FarmBtn = Instance.new("TextButton", Content)
+local FarmBtn = Instance.new("TextButton", Frame)
 FarmBtn.Size = UDim2.new(0.8,0,0,40)
 FarmBtn.Position = UDim2.new(0.1,0,0.3,0)
 FarmBtn.Text = "Auto Farm: OFF"
 
+local SkillBtn = Instance.new("TextButton", Frame)
+SkillBtn.Size = UDim2.new(0.8,0,0,40)
+SkillBtn.Position = UDim2.new(0.1,0,0.6,0)
+SkillBtn.Text = "Skill Spam: OFF"
+
 local farming = false
+local skill = false
 
 FarmBtn.MouseButton1Click:Connect(function()
     farming = not farming
     FarmBtn.Text = farming and "Auto Farm: ON" or "Auto Farm: OFF"
 end)
 
--- Skill Spam Button
-local SkillBtn = Instance.new("TextButton", Content)
-SkillBtn.Size = UDim2.new(0.8,0,0,40)
-SkillBtn.Position = UDim2.new(0.1,0,0.5,0)
-SkillBtn.Text = "Skill Spam: OFF"
-
-local skill = false
-
 SkillBtn.MouseButton1Click:Connect(function()
     skill = not skill
     SkillBtn.Text = skill and "Skill Spam: ON" or "Skill Spam: OFF"
 end)
 
--- Footer
-local Footer = Instance.new("TextLabel", Main)
-Footer.Size = UDim2.new(1,0,0,25)
-Footer.Position = UDim2.new(0,0,1,-25)
-Footer.Text = "ZMatrix Hub v1.0"
-Footer.TextColor3 = Color3.fromRGB(0,255,255)
-Footer.BackgroundTransparency = 1
-Footer.TextScaled = true
-
--- Demo loop (để test nút có chạy)
+-- LOOP FIX
 task.spawn(function()
     while true do
-        if farming then
-            print("Auto Farm Running")
+        local char = player.Character or player.CharacterAdded:Wait()
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+
+        if hrp then
+            if farming then
+                -- TELE (bạn sửa tọa độ thật)
+                hrp.CFrame = CFrame.new(100, 10, 100)
+            end
+
+            if skill then
+                -- THAY vì VirtualInput → dùng tool
+                local tool = char:FindFirstChildOfClass("Tool")
+                if tool then
+                    tool:Activate()
+                end
+            end
         end
-        if skill then
-            print("Skill Spam Running")
-        end
+
         task.wait(1)
     end
 end)
